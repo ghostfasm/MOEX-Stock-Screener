@@ -1,7 +1,3 @@
--- Emit, {история для 1M {10s * 6}, 5M {1m * 5}}
--- _Ticker = 1, _1D_Change = 2, _10M_Change = 3, _3M_Change = 4, _1M_Change = 5
-
-
 Emitents = {
 	{"GLTR", 0, {}, {}, {}, {}},
 	{"LSRG", 0, {}, {}, {}, {}},
