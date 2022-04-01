@@ -8,15 +8,15 @@ currentHourValue = 0
 
 currentTime = 0
 
--- Менять при компиляции --
+-- РњРµРЅСЏС‚СЊ РїСЂРё РєРѕРјРїРёР»СЏС†РёРё --
 local IS_LUQID_ROBOT = true
 -----------------------------
 
-------Максимальные периуды--------
-local MAX_1M_PERIOD_SIZE = 6 -- 6 секунд по 10 секунд за тик
-local MAX_3M_PERIOD_SIZE = 6 -- 30 секунд по 6 секунд за тик
-local MAX_5M_PERIOD_SIZE = 5 -- 5 периудов по 1 минуте
-local MAX_10M_PERIOD_SIZE = 10 -- 10 минут по 1 минутке за тик
+------РњР°РєСЃРёРјР°Р»СЊРЅС‹Рµ РїРµСЂРёСѓРґС‹--------
+local MAX_1M_PERIOD_SIZE = 6 -- 6 СЃРµРєСѓРЅРґ РїРѕ 10 СЃРµРєСѓРЅРґ Р·Р° С‚РёРє
+local MAX_3M_PERIOD_SIZE = 6 -- 30 СЃРµРєСѓРЅРґ РїРѕ 6 СЃРµРєСѓРЅРґ Р·Р° С‚РёРє
+local MAX_5M_PERIOD_SIZE = 5 -- 5 РїРµСЂРёСѓРґРѕРІ РїРѕ 1 РјРёРЅСѓС‚Рµ
+local MAX_10M_PERIOD_SIZE = 10 -- 10 РјРёРЅСѓС‚ РїРѕ 1 РјРёРЅСѓС‚РєРµ Р·Р° С‚РёРє
 --##############################-
 
 local function getCurrentPrice(ticker_id)
@@ -34,7 +34,7 @@ local function addElementToList(src, v, perioudSize)
     table.insert(src, v)
 end
 
-function Body() -- Основные вычисления
+function Body() -- РћСЃРЅРѕРІРЅС‹Рµ РІС‹С‡РёСЃР»РµРЅРёСЏ
 	currentTime = getInfoParam("SERVERTIME")
 	currentHourValue, currentMinValue, currentSecValue = currentTime:match("(%d+):(%d+):(%d+)")
 
@@ -48,7 +48,7 @@ function Body() -- Основные вычисления
 
 	local ServerTime = getInfoParam("SERVERTIME")
 	if (ServerTime == nil or ServerTime == "") then
-		Problem = "Время сервера не получено!"
+		Problem = "Server time not received!"
 		Timer = 3
 		return 
 	else
@@ -77,7 +77,7 @@ function Body() -- Основные вычисления
 		updateAllCells()
 		-- updateStartPosition()
 
-	-- Колоризация отдельных строк с интересными ситуациями
+	-- РљРѕР»РѕСЂРёР·Р°С†РёСЏ РѕС‚РґРµР»СЊРЅС‹С… СЃС‚СЂРѕРє СЃ РёРЅС‚РµСЂРµСЃРЅС‹РјРё СЃРёС‚СѓР°С†РёСЏРјРё
 	if IS_LUQID_ROBOT == true then
 		for i = 1, #Emitents do
 			local _1mValue = tonumber(GetCell(TableID, i, Columns._1M_Change).image)
@@ -85,14 +85,14 @@ function Body() -- Основные вычисления
 
 			if (_1mValue >= 0.50) then
 				if (_3mValue >= 0.50) then
-					-- мигался красным
+					-- РјРёРіР°Р»СЃСЏ РєСЂР°СЃРЅС‹Рј
 					Highlight(TableID, i,  QTABLE_NO_INDEX, RGB(255, 0, 0), RGB(255, 255, 255), 5000)
 					return 0
 				end
-				-- мигалка зелёным
+				-- РјРёРіР°Р»РєР° Р·РµР»С‘РЅС‹Рј
 				Highlight(TableID, i,  QTABLE_NO_INDEX, RGB(76, 153, 0), RGB(255, 255, 255), 5000)
 			elseif (_1mValue >= 0.30) then
-				-- мигалка жёлтым
+				-- РјРёРіР°Р»РєР° Р¶С‘Р»С‚С‹Рј
 				Highlight(TableID, i,  QTABLE_NO_INDEX, RGB(102, 102, 0), RGB(255, 255, 255), 5000)
 			end
 
@@ -104,12 +104,12 @@ end
 
 -- Callbacks
 function OnOneHourUpdate(dHour)
-	-- срабатывает каждый час
+	-- СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РєР°Р¶РґС‹Р№ С‡Р°СЃ
 
 end
 
 function OnOneMinUpdate(dMin)
-	-- срабатывает каждую минуту
+	-- СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РєР°Р¶РґСѓСЋ РјРёРЅСѓС‚Сѓ
 	
 	-- 5M
 	for i = 1, #Emitents do
@@ -119,7 +119,7 @@ function OnOneMinUpdate(dMin)
 end
 
 function OnOneSecUpdate(dSec)
-	-- срабатывает каждую секунду
+	-- СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РєР°Р¶РґСѓСЋ СЃРµРєСѓРЅРґСѓ
 
 	-- 1M
 	if (dSec % 10) == 0 then
@@ -154,7 +154,7 @@ function PutDataToTableTimer()
 	Highlight(TableID, 1,  QTABLE_NO_INDEX, RGB(0, 20, 255), RGB(255, 255, 255), 500)
 end
 
--- Инициализация таблицы при первом запуске
+-- РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ С‚Р°Р±Р»РёС†С‹ РїСЂРё РїРµСЂРІРѕРј Р·Р°РїСѓСЃРєРµ
 function EmitentsInitialization()
 		for i = 1, #Emitents do
 				Emitents[i][1] = getCurrentPrice(i)
@@ -164,10 +164,10 @@ function EmitentsInitialization()
 		end
 end
 
---------------Получение данных из таблицы текущих инструментов-------------------
+--------------РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… РёР· С‚Р°Р±Р»РёС†С‹ С‚РµРєСѓС‰РёС… РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ-------------------
 function getDataFromEmitTable()
 	for i = 1, EmitentsSize do
-		local lastchange = string.format("%g",string.format("%.2f", tostring(getParamEx(Class, Emitents[i][Columns._Ticker], "LASTCHANGE").param_value))) -- param_value для чисел
+		local lastchange = string.format("%g",string.format("%.2f", tostring(getParamEx(Class, Emitents[i][Columns._Ticker], "LASTCHANGE").param_value))) -- param_value РґР»СЏ С‡РёСЃРµР»
 		-- SetCell(TableID, i, Columns._1D_Change, lastchange)
 		SetCell(TableID, i, Columns._1M_Change, tostring(math.abs(math.abs(tonumber(lastchange)) - math.abs(tonumber(Emitents[i][Columns._1M_Change])))) )
 	end
@@ -176,9 +176,9 @@ end
 function PutDataToTableInit()
 	--Clear(TableID)
 	SetWindowPos(TableID, 100, 200, 500, 300)
-	SetWindowCaption(TableID, "Quik 8.7.1.3 | Скринер неликвидных акций by VLASSAL")
+	SetWindowCaption(TableID, "Quik 8.7.1.3 | Illiquid stock screener by VLASSAL")
 
-	----------------------[Инициализация инструментов]---------------
+	----------------------[РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРІ]---------------
 	for i = 1, #Emitents do
 		InsertRow(TableID, -1)
 		SetCell(TableID, i, Columns._Ticker, Emitents[i][Columns._Ticker])
@@ -198,9 +198,9 @@ function WriteToEndOfFile(sFile, sDataString)
 		f = io.open(sFile, "w")
 	end
 	if (f ~= nil) then
-		f:seek("end", 0) -- устанавливает в определенном месте файла курсор
+		f:seek("end", 0) -- СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РІ РѕРїСЂРµРґРµР»РµРЅРЅРѕРј РјРµСЃС‚Рµ С„Р°Р№Р»Р° РєСѓСЂСЃРѕСЂ
 		f:write(sDataString)
-		f:flush() -- сохранение
+		f:flush() -- СЃРѕС…СЂР°РЅРµРЅРёРµ
 		f:close()
 	end
 end

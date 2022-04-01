@@ -24,7 +24,7 @@ EmitentsSize = 35
 
 function OnInit()
 	TableID = AllocTable() 
-	AddColumn(TableID, Columns._Ticker, "Тикер", true, QTABLE_STRING_TYPE, 15)
+	AddColumn(TableID, Columns._Ticker, "Ticker", true, QTABLE_STRING_TYPE, 15)
 	AddColumn(TableID, Columns._1D_Change, "|%1d|", true, QTABLE_STRING_TYPE, 10)
 	AddColumn(TableID, Columns._10M_Change, "|%10m|", true, QTABLE_STRING_TYPE, 10)
 	AddColumn(TableID, Columns._5M_Change, "|%5m|", true, QTABLE_STRING_TYPE, 10)
@@ -36,7 +36,7 @@ function OnInit()
 	-- EmitentsInitialization()
 	PutDataToTableInit()
 
-	WriteToEndOfFile(FileLog, "Скринер запущен")
+	WriteToEndOfFile(FileLog, "BOT started")
 end
 
 function main()
@@ -49,7 +49,7 @@ end
 function OnStop()
 	is_run = false
 	DestroyTable(TableID)
-	WriteToEndOfFile(FileLog, "Скринер остановлен­")
+	WriteToEndOfFile(FileLog, "BOT stoppedВ­")
 end
 
 
