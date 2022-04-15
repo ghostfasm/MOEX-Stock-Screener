@@ -1,12 +1,12 @@
-prevSecValue = 0
-prevMinValue = 0
-prevHourValue = 0
+local prevSecValue = 0
+local prevMinValue = 0
+local prevHourValue = 0
 
-currentSecValue = 0
-currentMinValue = 0
-currentHourValue = 0
+local currentSecValue = 0
+local currentMinValue = 0
+local currentHourValue = 0
 
-currentTime = 0
+local currentTime = 0
 
 -- Менять при компиляции --
 local IS_LUQID_ROBOT = true
@@ -19,22 +19,21 @@ local MAX_5M_PERIOD_SIZE = 5 -- 5 периудов по 1 минуте
 local MAX_10M_PERIOD_SIZE = 10 -- 10 минут по 1 минутке за тик
 --##############################-
 
+-- Получить текущую цену
 local function getCurrentPrice(ticker_id)
-	local price = string.format("%g",string.format("%.2f", tostring(math.abs(getParamEx(Class, Emitents[ticker_id][Columns._Ticker], "LASTCHANGE").param_value))))
-
-	return price
+	return string.format("%g",string.format("%.2f", tostring(math.abs(getParamEx(Class, Emitents[ticker_id][Columns._Ticker], "LASTCHANGE").param_value))))
 end
 
 local function addElementToList(src, v, perioudSize)
-    if (#src == perioudSize) then
-        table.remove(src, 1)
-    end
-    
+	if (#src == perioudSize) then
+		table.remove(src, 1)
+	end
 
-    table.insert(src, v)
+	table.insert(src, v)
 end
 
-function Body() -- Основные вычисления
+-- Основные вычисления
+function Body() 
 	currentTime = getInfoParam("SERVERTIME")
 	currentHourValue, currentMinValue, currentSecValue = currentTime:match("(%d+):(%d+):(%d+)")
 
@@ -60,22 +59,22 @@ function Body() -- Основные вычисления
 		PutDataToTableInit()
 	end
 
-		-- Callback update
-		if currentHourValue ~= prevHourValue then
-			OnOneHourUpdate(currentHourValue)
-			prevHourValue = currentHourValue
-		end
-	
-		if currentMinValue ~= prevMinValue then
-			OnOneMinUpdate(currentMinValue)
-			prevMinValue = currentMinValue
-		end
-	
-		OnOneSecUpdate(currentSecValue)
-		prevSecValue = currentSecValue
-	
-		updateAllCells()
-		-- updateStartPosition()
+	-- Вызов callback`ов
+	if currentHourValue ~= prevHourValue then
+		OnOneHourUpdate(currentHourValue)
+		prevHourValue = currentHourValue
+	end
+
+	if currentMinValue ~= prevMinValue then
+		OnOneMinUpdate(currentMinValue)
+		prevMinValue = currentMinValue
+	end
+
+	OnOneSecUpdate(currentSecValue)
+	prevSecValue = currentSecValue
+
+	updateAllCells()
+	-- updateStartPosition()
 
 	-- Колоризация отдельных строк с интересными ситуациями
 	if IS_LUQID_ROBOT == true then
@@ -95,8 +94,6 @@ function Body() -- Основные вычисления
 				-- мигалка жёлтым
 				Highlight(TableID, i,  QTABLE_NO_INDEX, RGB(102, 102, 0), RGB(255, 255, 255), 5000)
 			end
-
-			
 		end
 	end
 	sleep(1000)
@@ -156,12 +153,12 @@ end
 
 -- Инициализация таблицы при первом запуске
 function EmitentsInitialization()
-		for i = 1, #Emitents do
-				Emitents[i][1] = getCurrentPrice(i)
-				for j = 2, #Emitents[i] do
-					table.insert(Emitents[i][j], getCurrentPrice(i))
-				end
+	for i = 1, #Emitents do
+		Emitents[i][Columns._Ticker] = getCurrentPrice(i)
+		for j = Columns._1D_Change, #Emitents[i] do
+			table.insert(Emitents[i][j], getCurrentPrice(i))
 		end
+	end
 end
 
 --------------Получение данных из таблицы текущих инструментов-------------------
@@ -182,8 +179,8 @@ function PutDataToTableInit()
 	for i = 1, #Emitents do
 		InsertRow(TableID, -1)
 		SetCell(TableID, i, Columns._Ticker, Emitents[i][Columns._Ticker])
-		Emitents[i][2] = getCurrentPrice(i)
-		for j = 3, #Emitents[i] do
+		Emitents[i][Columns._1D_Change] = getCurrentPrice(i)
+		for j = Columns._10M_Change, #Emitents[i] do
 			table.insert(Emitents[i][j], getCurrentPrice(i))
 		end
 	end
